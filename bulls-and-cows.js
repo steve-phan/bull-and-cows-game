@@ -22,11 +22,13 @@ function checkValidInput(playerNumber, notice) {
   ) {
     playerNumber = prompt(notice);
   }
+  return playerNumber;
 }
 function checkValidGameMode(input) {
   while (!'eh'.includes(input.toLowerCase())) {
     input = prompt('Incorrect Syntax. Enter E(e) for Easy, H(h) for Hard: ');
   }
+  return input;
 }
 function getBullandCows(sceretNumber, playerNumber) {
   let bulls = 0;
@@ -49,6 +51,7 @@ function endGame(playerName) {
 }
 
 function nextGame(playerName) {
+  attemps = 0;
   let playAgain = prompt('Play again? (Y)... ');
   playAgain.toLowerCase() === 'y' ? startGame() : endGame(playerName);
 }
@@ -62,31 +65,33 @@ function startGame() {
   console.log(sceretNumber);
 
   let gameMode = prompt('Enter E(e) for Easy, H(h) for Hard: ');
-  checkValidGameMode(gameMode);
+  gameMode = checkValidGameMode(gameMode);
   gameMode === 'e' ? (maxAttemps = 10000) : (maxAttemps = hardNumber);
 
   let playerNumber = prompt(message.inputNumber);
-  checkValidInput(playerNumber, message.invalidSyntax);
+  playerNumber = checkValidInput(playerNumber, message.invalidSyntax);
 
   while (Number(playerNumber) !== sceretNumber) {
     attemps += 1;
     const { bulls, cows } = getBullandCows(sceretNumber, playerNumber);
+    console.log(`You have chosen ${playerNumber}  `);
     console.log(
       message.wrongAnswer +
         `You tried ${attemps} times` +
         `${
-          gameMode.toLowerCase() === 'h'
+          gameMode.toLowerCase() !== 'e'
             ? ` You got only ${maxAttemps - attemps} times`
             : 'go ahead ... U can do it'
         }`
     );
     console.log(`Hints : You got ${bulls} bulls and ${cows} cows`);
+    console.log('========================================');
     if (attemps === maxAttemps) {
       console.log('You lose ...');
       return nextGame(playerName);
     } else {
       playerNumber = prompt(message.wrongAnswer);
-      checkValidInput(playerNumber, message.invalidSyntax);
+      playerNumber = checkValidInput(playerNumber, message.invalidSyntax);
     }
   }
   console.log(message.rightAnswer);
